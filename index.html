@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Crop Yield Prediction</title>
+    <script>
+        function sendPredictionRequest() {
+            const area = document.getElementById('area').value;
+            const season = document.getElementById('season').value;
+            const crop = document.getElementById('crop').value;
+            const yieldPerArea = document.getElementById('yield_per_area').value;
+
+            const data = {
+                Area: parseFloat(area),
+                Season: season,
+                Crop: crop,
+                Yield_Per_Area: parseFloat(yieldPerArea)
+            };
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = `Predicted Production: ${data.Production}`;
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Crop Yield Prediction</h1>
+    <form onsubmit="event.preventDefault(); sendPredictionRequest();">
+        <label for="area">Area:</label>
+        <input type="number" id="area" name="area" required>
+        <br><br>
+        <label for="season">Season:</label>
+        <input type="text" id="season" name="season" required>
+        <br><br>
+        <label for="crop">Crop:</label>
+        <input type="text" id="crop" name="crop" required>
+        <br><br>
+        <label for="yield_per_area">Yield Per Area:</label>
+        <input type="number" step="0.01" id="yield_per_area" name="yield_per_area" required>
+        <br><br>
+        <input type="submit" value="Predict">
+    </form>
+    <h2 id="result"></h2>
+</body>
+</html>
